@@ -1,3 +1,7 @@
+// Página de configurações de tema. States do themeStore: mode (dark/light/system/custom), customAccent.
+// setMode alterna entre 4 modos de tema. customAccent só aparece quando mode === 'custom'.
+// resetTheme restaura tema padrão. Seção de preview mostra botões e card com o tema atual.
+
 import { Settings, RotateCcw, Monitor, Moon, Sun, Palette } from 'lucide-react'
 import useThemeStore from '../../store/themeStore'
 import Button from '../../components/ui/Button'

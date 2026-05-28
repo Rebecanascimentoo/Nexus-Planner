@@ -1,3 +1,7 @@
+// Dialogo modal de confirmacao para acoes destrutivas (excluir, cancelar).
+// Exibe icone de alerta, titulo, mensagem e dois botoes: Cancelar / Confirmar.
+// O botoes de confirmar usa fundo vermelho quando danger=true (padrao).
+
 import { AlertTriangle, X } from 'lucide-react'
 import Button from './ui/Button'
 
@@ -6,6 +10,7 @@ export default function ConfirmDialog({ open, title, message, onConfirm, onCance
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      {/* Overlay escuro com blur — fecha ao clicar fora */}
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onCancel} />
       <div className="relative w-full max-w-sm glass-card rounded-2xl shadow-2xl p-6" style={{ background: 'rgba(255,255,255,0.08)', backdropFilter: 'blur(32px)' }}>
         <div className="flex items-center gap-3 mb-4">

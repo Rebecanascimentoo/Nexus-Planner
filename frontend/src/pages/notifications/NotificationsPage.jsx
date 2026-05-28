@@ -1,3 +1,9 @@
+// Página de notificações/lembretes. Gera lista via reminderStore.getAll() combinando tarefas e hábitos.
+// severityConfig: mapeia severidade (high/medium/low) para ícone, cor e rótulo em português.
+// total/high: contagem total e prioritária exibida no header.
+// Cada notificação é clicável — navega para /tasks (se taskId) ou /habits (se habitId).
+// Estado vazio exibe mensagem "Tudo em dia!" com link para tarefas.
+
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Bell, AlertTriangle, Clock, Flame, CheckCircle } from 'lucide-react'

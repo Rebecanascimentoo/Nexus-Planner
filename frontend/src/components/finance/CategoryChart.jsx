@@ -1,6 +1,8 @@
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts'
 import { CHART_COLORS } from '../../constants/colors'
 
+// Gráfico de barras de despesas por categoria. Props: data = [{ name, value }].
+// Usa Recharts com cores do CHART_COLORS. Exibe placeholder se vazio.
 export default function CategoryChart({ data = [] }) {
   if (data.length === 0) {
     return (
@@ -12,21 +14,10 @@ export default function CategoryChart({ data = [] }) {
 
   return (
     <ResponsiveContainer width="100%" height={250}>
-      <PieChart>
-        <Pie
-          data={data}
-          cx="50%"
-          cy="50%"
-          innerRadius={50}
-          outerRadius={90}
-          paddingAngle={3}
-          dataKey="value"
-          nameKey="name"
-        >
-          {data.map((_, i) => (
-            <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
-          ))}
-        </Pie>
+      <BarChart data={data} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+        <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 11 }} />
+        <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 11 }} />
         <Tooltip
           contentStyle={{
             backgroundColor: '#131826',
@@ -37,11 +28,12 @@ export default function CategoryChart({ data = [] }) {
           }}
           formatter={(value) => `R$ ${value.toFixed(2)}`}
         />
-        <Legend
-          wrapperStyle={{ fontSize: '11px', color: '#94a3b8' }}
-          formatter={(value) => <span style={{ color: '#94a3b8' }}>{value}</span>}
-        />
-      </PieChart>
+        <Bar dataKey="value" radius={[4, 4, 0, 0]} maxBarSize={40}>
+          {data.map((_, i) => (
+            <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
+          ))}
+        </Bar>
+      </BarChart>
     </ResponsiveContainer>
   )
 }

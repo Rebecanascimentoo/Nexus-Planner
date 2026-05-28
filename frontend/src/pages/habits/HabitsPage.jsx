@@ -1,3 +1,11 @@
+// Página de hábitos com visão mensal. States: year, month, tab (filtro categoria), showForm, editingHabit, confirmDelete.
+// calcHabitScore: calcula % de cumprimento (check-ins / target mensal). targetDefault: daily=mês, weekly=4, monthly=1.
+// filteredHabits: filtra por categoria ativa (tab). allTabs: CATEGORIES + categorias custom detectadas.
+// weeklyScores: divide mês em 4 semanas e calcula média diária de hábitos diários concluídos.
+// categoryScores: agrupa score por categoria. monthlyTrend: score médio dos últimos 6 meses.
+// frequencyDist: contagem de hábitos por frequência (daily/weekly/monthly). totalCompleted: check-ins vs target.
+// handleCellClick: alterna check-in de um hábito em uma data específica na HabitTable.
+
 import { useState, useMemo } from 'react'
 import { Plus, ChevronLeft, ChevronRight } from 'lucide-react'
 import useHabitsStore from '../../store/habitsStore'

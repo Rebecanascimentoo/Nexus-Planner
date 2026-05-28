@@ -9,6 +9,9 @@ const CATEGORY_COLORS = {
   criatividade: '#06b6d4',
 }
 
+// Gráfico de barras horizontal com score (%) por categoria de hábito
+// Props: { data: [{ category: string, label: string, count: number, score: number }] }
+// Cada categoria recebe uma cor fixa de CATEGORY_COLORS. Exibe "Sem dados" se vazio.
 export default function CategoryScoreChart({ data = [] }) {
   const chartData = data
     .filter((d) => d.count > 0)

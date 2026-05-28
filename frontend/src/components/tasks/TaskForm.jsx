@@ -4,6 +4,9 @@ import useTasksStore, { categories, priorities } from '../../store/tasksStore'
 import { PRIORITY_LABELS } from '../../constants'
 import Button from '../ui/Button'
 
+// Modal de criação/edição de tarefa com título, descrição, prioridade, categoria e data de vencimento
+// Props: { task?: object (null = criação), onClose: () => void }
+// handleSubmit valida título e chama addTask (criação) ou updateTask (edição) da store
 export default function TaskForm({ task, onClose }) {
   const addTask = useTasksStore((s) => s.addTask)
   const updateTask = useTasksStore((s) => s.updateTask)

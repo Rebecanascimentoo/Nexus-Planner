@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
+/* Normaliza data pra YYYY-MM-DD (chave usada em logs e notes). */
 function dateKey(date) {
   return new Date(date).toISOString().split('T')[0]
 }
@@ -13,6 +14,8 @@ function getDaysInMonth(year, month) {
   return new Date(year, month + 1, 0).getDate()
 }
 
+/* Número da semana dentro do mês (1-5), baseado no dia da semana do dia 1.
+   Usado para distribuir check-ins no heatmap semanal. */
 function getWeekNumber(dateStr) {
   const d = new Date(dateStr)
   const month = d.getMonth()
@@ -43,6 +46,9 @@ function createHabit(data) {
   }
 }
 
+/* Calcula streak atual: conta dias consecutivos (pra trás) desde hoje.
+   Usa Set pra deduplicar múltiplos check-ins no mesmo dia.
+   Se ontem não foi marcado, a streak quebra (streak = 0 ou 1 se só hoje). */
 export function calcStreak(logs) {
   const dates = [...new Set(logs.map((l) => dateKey(l)))].sort().reverse()
   let streak = 0
@@ -56,6 +62,7 @@ export function calcStreak(logs) {
   return streak
 }
 
+/* Score percentual de um hábito num mês: check-ins / target, capped em 100. */
 function calcHabitScore(habit, year, month) {
   const daysInMonth = getDaysInMonth(year, month)
   const target = habit.monthlyTarget || defaultMonthlyTarget(habit.frequency, year, month)
@@ -76,6 +83,8 @@ const defaultHabits = [
   { id: 'gen6', name: 'Ligar pra família', emoji: '📞', frequency: 'monthly', category: 'social', monthlyTarget: 2, logs: [], notes: {}, createdAt: new Date().toISOString() },
 ]
 
+/* Store de hábitos — check-ins diários, streaks, notas e score mensal.
+   Persistida como 'nexus-habits'. Tem migrate pra categorias antigas. */
 const useHabitsStore = create(
   persist(
     (set, get) => ({
@@ -92,6 +101,8 @@ const useHabitsStore = create(
       deleteHabit: (id) =>
         set((state) => ({ habits: state.habits.filter((h) => h.id !== id) })),
 
+      /* Alterna check-in: adiciona ou remove a data do array logs.
+         Normaliza a data com dateKey pra evitar duplicatas. */
       toggleCheckIn: (id, dateStr) => {
         set((state) => ({
           habits: state.habits.map((h) => {
@@ -106,6 +117,8 @@ const useHabitsStore = create(
         }))
       },
 
+      /* Adiciona/sobrescreve anotação textual num dia específico do hábito.
+         Chave do objeto notes é a data normalizada (YYYY-MM-DD). */
       addNote: (id, dateStr, text) =>
         set((state) => ({
           habits: state.habits.map((h) =>
@@ -115,6 +128,7 @@ const useHabitsStore = create(
           ),
         })),
 
+      /* Média geral de score de todos os hábitos no mês. */
       calcScore: (year, month) => {
         const habits = get().habits
         if (habits.length === 0) return 0
@@ -122,12 +136,15 @@ const useHabitsStore = create(
         return Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
       },
 
+      /* Score de um hábito específico. */
       calcHabitScore: (id, year, month) => {
         const habit = get().habits.find((h) => h.id === id)
         if (!habit) return 0
         return calcHabitScore(habit, year, month)
       },
 
+      /* Score semanal: média diária de check-ins entre hábitos daily.
+         Útil para gráfico de calor semanal na dashboard. */
       getWeeklyScores: (year, month) => {
         const daysInMonth = getDaysInMonth(year, month)
         const weeks = [...new Set(
@@ -155,6 +172,9 @@ const useHabitsStore = create(
         })
       },
 
+      /* Dados completos pra tabela mensal: check-ins por semana, streak, score.
+         Retorna { rows: dados por hábito, overall: média geral }.
+         weekMax indica quantos dias existem em cada semana (pra escala). */
       getComputedData: (year, month) => {
         const habits = get().habits
         const daysInMonth = getDaysInMonth(year, month)
@@ -206,6 +226,8 @@ const useHabitsStore = create(
     }),
     {
       name: 'nexus-habits',
+      /* Migração: mapeia categorias antigas (controle → pessoal, etc.)
+         e garante campos customCategory e monthlyTarget que não existiam. */
       migrate: (state) => {
         const catMap = { controle: 'pessoal', planejamento: 'estudos', longo_prazo: 'trabalho' }
         return {

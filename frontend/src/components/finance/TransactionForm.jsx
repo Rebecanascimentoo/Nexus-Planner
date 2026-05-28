@@ -5,6 +5,8 @@ import Button from '../ui/Button'
 
 const methodIcons = { credito: CreditCard, debito: Landmark, dinheiro: Banknote }
 
+// Modal de criação/edição de transação. transaction = objeto existente (edição) ou null (nova).
+// onClose é chamado ao salvar ou cancelar. Gerencia descrição, valor, tipo, categoria, data, pagamento, essencialidade, status e recorrência.
 export default function TransactionForm({ transaction, onClose }) {
   const addTransaction = useFinanceStore((s) => s.addTransaction)
   const updateTransaction = useFinanceStore((s) => s.updateTransaction)
@@ -20,6 +22,7 @@ export default function TransactionForm({ transaction, onClose }) {
   const [status, setStatus] = useState(transaction?.status || 'pago')
   const [recurring, setRecurring] = useState(transaction?.recurring || null)
 
+  // Salva (ou atualiza) a transação no store e fecha o modal
   function handleSubmit(e) {
     e.preventDefault()
     if (!description.trim() || !amount) return

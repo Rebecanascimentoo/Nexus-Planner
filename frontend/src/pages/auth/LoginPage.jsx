@@ -1,3 +1,7 @@
+// Página de login com fundo decorativo (imagem + gradientes + partículas flutuantes).
+// Delega o formulário ao componente LoginForm. Exibe BrandShowcase ao lado direito.
+// motes: 20 partículas com animação CSS flutuante (opacidade/posição pseudo-aleatória).
+
 import LoginForm from './LoginForm'
 import BrandShowcase from '../../components/BrandShowcase'
 import loginBg from '../../assets/bglogin.png'

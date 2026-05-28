@@ -1,3 +1,5 @@
+// Dados mockados para o dashboard. Substituir por dados reais da API futuramente.
+
 export const metrics = [
   {
     id: 1,
@@ -40,6 +42,7 @@ export const urgentTasks = [
   { id: 4, title: 'Meeting com a equipe', time: '18:00', priority: 'low', category: 'Work' },
 ]
 
+// Dados do grafico semanal da dashboard
 export const weeklyData = [
   { day: 'Seg', value: 8 },
   { day: 'Ter', value: 12 },
@@ -71,6 +74,7 @@ export const financeSummary = {
   period: 'Maio 2026',
 }
 
+// Links da barra lateral — mapeados pelo icon name para o componente lucide-react
 export const sidebarLinks = [
   { label: 'Dashboard', path: '/dashboard', icon: 'LayoutDashboard' },
   { label: 'Tarefas', path: '/tasks', icon: 'CheckSquare' },

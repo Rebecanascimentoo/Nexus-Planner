@@ -1,6 +1,8 @@
 import { Search } from 'lucide-react'
 import useFinanceStore, { transactionCategories, transactionTypes, paymentMethods, transactionStatuses } from '../../store/financeStore'
 
+// Barra de filtros para a listagem de transações: busca textual, mês, tipo, categoria, pagamento, status e essencialidade
+// Lê e atualiza o estado filter do financeStore
 export default function TransactionFilters() {
   const filter = useFinanceStore((s) => s.filter)
   const setFilter = useFinanceStore((s) => s.setFilter)

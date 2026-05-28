@@ -44,6 +44,13 @@ const CAT_SCHEMA = {
   criatividade: { label: 'Criatividade', color: '#06b6d4', border: 'border-l-[#06b6d4]' },
 }
 
+// Tabela mensal de hábitos: colunas por semana (S1-S4) + dias extras, meta, streak e score
+// Props:
+//   habits, year, month — dados e período
+//   onCellClick(id, dateKey) — marca/desmarca check-in
+//   onEdit(habit), onDelete(id) — ações por linha
+//   showCategorySep — separador visual entre categorias
+// Subcomponentes: Cell (checkbox), WeekCell (linha semanal)
 export default function HabitTable({ habits, year, month, onCellClick, onEdit, onDelete, showCategorySep }) {
   const daysInMonth = new Date(year, month + 1, 0).getDate()
   const extras = [29, 30, 31].filter((d) => d <= daysInMonth)

@@ -1,3 +1,7 @@
+// Formulário de login encapsulado. States: email, password, showPassword (toggle visual), remember.
+// handleSubmit: chama login() da authStore e redireciona para /dashboard.
+// Botões sociais (Google, Microsoft, Apple) são placeholders visuais sem ação.
+
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'

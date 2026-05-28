@@ -10,6 +10,8 @@ const typeConfig = {
   investimento: { icon: TrendingUp, color: 'text-[#8b5cf6]', bg: 'bg-[#8b5cf6]/15' },
 }
 
+// Modal de criação/edição de meta financeira. goal = objeto existente (edição) ou null (nova).
+// onClose é chamado ao salvar ou cancelar.
 export function GoalForm({ goal, onClose }) {
   const addGoal = useFinanceStore((s) => s.addGoal)
   const updateGoal = useFinanceStore((s) => s.updateGoal)
@@ -21,6 +23,7 @@ export function GoalForm({ goal, onClose }) {
   const [type, setType] = useState(goal?.type || 'reserva')
   const [deadline, setDeadline] = useState(goal?.deadline || '')
 
+  // Salva (ou atualiza) a meta no store e fecha o modal
   function handleSubmit(e) {
     e.preventDefault()
     if (!name.trim() || !targetAmount) return
@@ -80,6 +83,7 @@ export function GoalForm({ goal, onClose }) {
   )
 }
 
+// Card de exibição de meta: progresso (barra), ícone por tipo, ações de editar/excluir e formulário inline de contribuição
 export default function GoalCard({ goal }) {
   const contributeToGoal = useFinanceStore((s) => s.contributeToGoal)
   const deleteGoal = useFinanceStore((s) => s.deleteGoal)
@@ -91,6 +95,7 @@ export default function GoalCard({ goal }) {
   const Config = typeConfig[goal.type] || typeConfig.reserva
   const Icon = Config.icon
 
+  // Adiciona um valor ao progresso atual da meta e fecha o input de contribuição
   function handleContribute(e) {
     e.preventDefault()
     if (!contributeAmount) return

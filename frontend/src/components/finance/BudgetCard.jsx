@@ -3,16 +3,19 @@ import { Pencil, Check, X, Wallet } from 'lucide-react'
 import useFinanceStore from '../../store/financeStore'
 import { formatCurrency } from '../../utils/date'
 
+// Componente interno: linha de orçamento de uma categoria, com edição inline do valor planejado
 function BudgetRow({ item }) {
   const updateBudget = useFinanceStore((s) => s.updateBudget)
   const [editing, setEditing] = useState(false)
   const [value, setValue] = useState(String(item.planned))
 
+  // Salva o novo valor planejado da categoria e fecha o modo de edição
   function handleSave() {
     updateBudget(item.category, parseFloat(value) || 0)
     setEditing(false)
   }
 
+  // Indica se o gasto real ultrapassou o planejado
   const overBudget = item.actual > item.planned && item.planned > 0
   const usedPercent = item.planned > 0 ? (item.actual / item.planned) * 100 : 0
 
@@ -40,9 +43,7 @@ function BudgetRow({ item }) {
               <span className={`text-xs font-medium ${overBudget ? 'text-[#ef4444]' : 'text-white'}`}>
                 {formatCurrency(item.actual)} / {formatCurrency(item.planned)}
               </span>
-              {item.planned > 0 && (
-                <button onClick={() => { setValue(String(item.planned)); setEditing(true) }} className="p-0.5 text-white/20 hover:text-white/60"><Pencil size={10} /></button>
-              )}
+              <button onClick={() => { setValue(String(item.planned)); setEditing(true) }} className="p-0.5 text-white/20 hover:text-white/60"><Pencil size={10} /></button>
             </div>
           )}
         </div>
@@ -59,6 +60,7 @@ function BudgetRow({ item }) {
   )
 }
 
+// Card principal de orçamento: exibe progresso geral (barra + totais) e lista de categorias com edição inline
 export default function BudgetCard() {
   const getBudgetComparison = useFinanceStore((s) => s.getBudgetComparison)
   const comparison = getBudgetComparison()
@@ -66,7 +68,7 @@ export default function BudgetCard() {
   return (
     <div className="glass-card rounded-xl p-5 space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-base font-semibold text-white">Planejado vs Real</h2>
+        <h2 className="text-base font-semibold text-white">Orçamento</h2>
         <div className="flex items-center gap-1 text-xs text-white/40">
           <Wallet size={12} />
           <span className={comparison.remainingToSpend >= 0 ? 'text-[#10b981]' : 'text-[#ef4444]'}>
@@ -96,7 +98,7 @@ export default function BudgetCard() {
       </div>
 
       <div className="space-y-3">
-        {comparison.items.filter(i => i.planned > 0).map((item) => (
+        {comparison.items.map((item) => (
           <BudgetRow key={item.category} item={item} />
         ))}
       </div>

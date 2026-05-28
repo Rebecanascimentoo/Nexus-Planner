@@ -32,6 +32,9 @@ const links = [
   { label: 'Configurações', path: '/settings', icon: 'Settings' },
 ]
 
+// Sidebar de navegação principal (lg+ fixa, mobile em drawer via AppLayout)
+// Links mapeados em `links[]`: Dashboard, Tarefas, Hábitos, etc.
+// Exibe avatar/nome do usuário + botão de logout na parte inferior
 export default function Sidebar() {
   const user = useAuthStore((s) => s.user)
   const logout = useAuthStore((s) => s.logout)

@@ -3,6 +3,8 @@ import { persist } from 'zustand/middleware'
 import { isToday, isOverdue } from '../utils/date'
 import { MS_PER_DAY } from '../constants'
 
+/* Construtor de tarefa com valores padrão.
+   completedAt começa null — é preenchido por toggleComplete. */
 function createTask(data) {
   return {
     id: crypto.randomUUID(),
@@ -45,6 +47,8 @@ const defaultTasks = [
 export const categories = ['Dev', 'Work', 'Estudos', 'Pessoal', 'Finanças', 'Geral']
 export const priorities = ['low', 'normal', 'medium', 'high']
 
+/* Store de tarefas — CRUD completo, filtros, produtividade semanal.
+   Persistida como 'nexus-tasks'. Usa get() pras queries derivadas. */
 const useTasksStore = create(
   persist(
     (set, get) => ({
@@ -66,6 +70,8 @@ const useTasksStore = create(
           tasks: state.tasks.filter((t) => t.id !== id),
         })),
 
+      /* Alterna completed e registra timestamp em completedAt.
+         Se desmarcar, volta pra null (não registra "quando foi desfeita"). */
       toggleComplete: (id) =>
         set((state) => ({
           tasks: state.tasks.map((t) =>
@@ -81,6 +87,7 @@ const useTasksStore = create(
           ),
         })),
 
+      /* Merge parcial no filtro. */
       setFilter: (partial) =>
         set((state) => ({ filter: { ...state.filter, ...partial } })),
 
@@ -89,6 +96,7 @@ const useTasksStore = create(
           filter: { status: 'all', priority: 'all', category: 'all', search: '' },
         }),
 
+      /* Aplica filtros em cascata: status → prioridade → categoria → busca textual. */
       getFilteredTasks: () => {
         const { tasks, filter } = get()
         let result = [...tasks]
@@ -114,12 +122,15 @@ const useTasksStore = create(
         return result
       },
 
+      /* Tarefas não concluídas com vencimento hoje. */
       getTodayTasks: () => {
         return get().tasks.filter(
           (t) => !t.completed && t.dueDate && isToday(t.dueDate)
         )
       },
 
+      /* Tarefas urgentes: prioridade high/medium ou atrasadas.
+         Usado na dashboard e no badge do header. */
       getUrgentTasks: () => {
         return get().tasks.filter(
           (t) =>
@@ -130,6 +141,9 @@ const useTasksStore = create(
         )
       },
 
+      /* Produtividade dos últimos 7 dias: conta tarefas concluídas por dia.
+         Usa completedAt.startsWith(dateStr) pra agrupar por data.
+         Retorna array pra gráfico de barras. */
       getWeeklyProductivity: () => {
         const days = []
         const now = new Date()

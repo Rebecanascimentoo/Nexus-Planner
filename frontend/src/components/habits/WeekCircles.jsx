@@ -1,3 +1,6 @@
+// Círculos de progresso semanal — um por semana do mês com percentual e cor dinâmica
+// Props: { weeks: [{ label: string, value: number }] }
+// Cor: verde (>=80%), amarelo (>=50%), vermelho (<50%)
 export default function WeekCircles({ weeks = [] }) {
   return (
     <div className="glass-card rounded-xl p-5">

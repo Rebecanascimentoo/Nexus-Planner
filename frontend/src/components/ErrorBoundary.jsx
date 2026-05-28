@@ -1,3 +1,6 @@
+// ErrorBoundary (componente de classe) — captura erros de renderizacao nos filhos
+// e exibe uma UI amigavel com botao de recarregar em vez de quebrar a pagina toda.
+
 import { Component } from 'react'
 
 export default class ErrorBoundary extends Component {
@@ -6,6 +9,7 @@ export default class ErrorBoundary extends Component {
     this.state = { hasError: false }
   }
 
+  // Atualiza o estado quando um erro e lancado nos filhos
   static getDerivedStateFromError() {
     return { hasError: true }
   }

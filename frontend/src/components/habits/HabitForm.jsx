@@ -20,6 +20,9 @@ const frequencyOptions = [
   { value: 'monthly', label: 'Mensal' },
 ]
 
+// Modal de criação/edição de hábito com campos nome, frequência, meta mensal, categoria e ícone
+// Props: { habit?: object (null = criação), onClose: () => void }
+// Ao submeter chama addHabit (criação) ou updateHabit (edição) da store
 export default function HabitForm({ habit, onClose }) {
   const addHabit = useHabitsStore((s) => s.addHabit)
   const updateHabit = useHabitsStore((s) => s.updateHabit)

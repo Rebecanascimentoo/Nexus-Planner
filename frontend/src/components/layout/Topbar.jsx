@@ -6,6 +6,9 @@ import useTasksStore from '../../store/tasksStore'
 import useHabitsStore from '../../store/habitsStore'
 import useReminderStore from '../../store/reminderStore'
 
+// Barra superior com busca, botão de notificações e avatar do usuário
+// Props: { onToggleSidebar: () => void } — abre/fecha drawer no mobile
+// Lembretes pendentes são computados via useMemo combinando tasks + habits
 export default function Topbar({ onToggleSidebar }) {
   const user = useAuthStore((s) => s.user)
   const tasks = useTasksStore((s) => s.tasks)

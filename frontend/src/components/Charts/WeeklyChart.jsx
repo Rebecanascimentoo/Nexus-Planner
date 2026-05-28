@@ -8,6 +8,9 @@ import {
   ResponsiveContainer,
 } from 'recharts'
 
+// Gráfico de área semanal (dashboard) com gradiente roxo
+// Props: { data: [{ day: string, value: number }] } — ex: [{ day: 'Seg', value: 5 }]
+// Usa Recharts AreaChart com gradiente linear personalizado
 export default function WeeklyChart({ data = [] }) {
   return (
     <ResponsiveContainer width="100%" height={250}>

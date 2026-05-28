@@ -1,5 +1,10 @@
+// Utilitarios de data e moeda.
+// formatRelative, isToday, isOverdue usados em cards e listas.
+// getMonthDays / getEventsForDay usados no calendario.
+
 import { MS_PER_DAY } from '../constants'
 
+// Retorna true se a data cai no dia atual
 export function isToday(date) {
   const d = new Date(date)
   const now = new Date()
@@ -10,6 +15,7 @@ export function isToday(date) {
   )
 }
 
+// Retorna true se a data ja passou (considera 23:59:59 do dia como limite)
 export function isOverdue(date) {
   if (!date) return false
   const d = new Date(date)
@@ -18,8 +24,8 @@ export function isOverdue(date) {
   return d < now
 }
 
-/* Retorna string relativa: "Hoje", "Amanhã", "Em 3 dias", "Há 2 dias",
-   ou data abreviada como "15 mai". */
+// Retorna string relativa: "Hoje", "Amanha", "Em 3 dias", "Ha 2 dias",
+// ou data abreviada como "15 mai"
 export function formatRelative(dateStr) {
   if (!dateStr) return ''
   const d = new Date(dateStr)
@@ -37,14 +43,17 @@ export function formatRelative(dateStr) {
   return d.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' })
 }
 
+// Retorna o numero de dias de um mes (1-indexado)
 export function getDaysInMonth(year, month) {
   return new Date(year, month + 1, 0).getDate()
 }
 
+// Retorna o nome extenso do mes em portugues
 export function getMonthName(year, month) {
   return new Date(year, month).toLocaleDateString('pt-BR', { month: 'long' })
 }
 
+// Preenche array com os dias do mes, com nulls para alinhar o primeiro dia
 export function getMonthDays(year, month) {
   const days = []
   const totalDays = getDaysInMonth(year, month)
@@ -54,6 +63,7 @@ export function getMonthDays(year, month) {
   return days
 }
 
+// Filtra eventos que ocorrem em uma data especifica
 export function getEventsForDay(events, year, month, day) {
   return events.filter((ev) => {
     const d = new Date(ev.date)
@@ -61,6 +71,7 @@ export function getEventsForDay(events, year, month, day) {
   })
 }
 
+// Formata numero como moeda BRL (R$ 1.234,56)
 export function formatCurrency(value) {
   return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
 }

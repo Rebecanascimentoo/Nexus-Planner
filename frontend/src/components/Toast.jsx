@@ -1,18 +1,24 @@
+// Container de toasts — renderiza notificacoes do canto inferior direito.
+// Le os toasts da notificationStore e permite fechar cada um individualmente.
+
 import { X, CheckCircle, AlertCircle, Info } from 'lucide-react'
 import useNotificationStore from '../store/notificationStore'
 
+// Mapa de icones por tipo de toast
 const icons = {
   success: CheckCircle,
   error: AlertCircle,
   info: Info,
 }
 
+// Classes de borda e fundo por tipo
 const colors = {
   success: 'border-[#10b981] bg-[#10b981]/10',
   error: 'border-[#ef4444] bg-[#ef4444]/10',
   info: 'border-[#3b82f6] bg-[#3b82f6]/10',
 }
 
+// Cor do icone por tipo
 const iconColors = {
   success: 'text-[#10b981]',
   error: 'text-[#ef4444]',

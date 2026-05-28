@@ -3,6 +3,9 @@ import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
 const COLORS = ['#10b981', '#3b82f6', '#8b5cf6']
 const LABELS = { daily: 'Diário', weekly: 'Semanal', monthly: 'Mensal' }
 
+// Gráfico de pizza (donut) mostrando distribuição de hábitos por frequência
+// Props: { data: [{ frequency: 'daily'|'weekly'|'monthly', count: number }] }
+// Exibe legenda com nome, quantidade e percentual ao lado do gráfico
 export default function FrequencyPieChart({ data = [] }) {
   const chartData = data
     .filter((d) => d.count > 0)

@@ -13,6 +13,8 @@ const statusConfig = {
 
 const recurringLabels = { monthly: 'Mensal', yearly: 'Anual' }
 
+// Linha de uma transação na listagem: ícone (receita/despesa), descrição, status, recorrência, categoria, data, método, essencialidade, valor e ações (editar/excluir)
+// Componente memoizado para evitar re-renders desnecessários. Props: transaction, onEdit(transaction), onDelete(id)
 export default memo(function TransactionItem({ transaction, onEdit, onDelete }) {
   const isIncome = transaction.type === 'income'
   const PaymentIcon = methodIcons[transaction.paymentMethod] || Landmark

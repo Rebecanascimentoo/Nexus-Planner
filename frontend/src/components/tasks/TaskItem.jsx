@@ -9,6 +9,10 @@ const priorityBg = {
   low: 'rgba(16,185,129,0.12)',
 }
 
+// Card de uma tarefa com checkbox (toggle), título, prioridade, categoria, data e ações
+// Props: { task, onToggle(id), onEdit(task), onDelete(id) }
+// Marca "ATRASADA" em vermelho se dueDate passou e task não foi concluída
+// Ações de editar/excluir aparecem no hover (opacity 0 → 1)
 export default function TaskItem({ task, onToggle, onEdit, onDelete }) {
   const overdue = !task.completed && task.dueDate && isOverdue(task.dueDate)
 

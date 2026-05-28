@@ -1,3 +1,6 @@
+// Botão reutilizável com 3 variantes visuais: primary (gradiente), ghost (vidrado), outline (borda)
+// Props: { variant?: 'primary' | 'ghost' | 'outline', className?: string, children, ...props }
+// Props excedentes (onClick, disabled, type, etc.) são spreadadas no <button>
 export default function Button({
   children,
   variant = 'primary',

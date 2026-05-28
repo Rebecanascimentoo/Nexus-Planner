@@ -8,6 +8,9 @@ const statusTabs = [
   { key: 'completed', label: 'Concluídas' },
 ]
 
+// Barra de filtros de tarefas: busca textual + abas de status + selects de prioridade/categoria
+// Lê e altera o estado global `filter` da tasksStore
+// Exibe "Limpar filtros" quando algum filtro diferente do padrão está ativo
 export default function TaskFilters() {
   const filter = useTasksStore((s) => s.filter)
   const setFilter = useTasksStore((s) => s.setFilter)

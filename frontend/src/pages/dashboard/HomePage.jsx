@@ -1,3 +1,10 @@
+// Página inicial do dashboard. Reúne métricas de tarefas, hábitos e finanças.
+// todayTasks: tarefas não concluídas com dueDate = hoje. urgentTasks: alta/média prioridade ou atrasadas.
+// weeklyData: agrega conclusões dos últimos 7 dias para o gráfico semanal.
+// metrics: 4 cards (tarefas hoje, streak hábitos, saldo, próximo evento).
+// nextEvent: pega primeira tarefa com dueDate = hoje; fallback "Nenhum evento".
+// showQuickTask: controla modal de criação rápida de tarefa.
+
 import { useMemo } from 'react'
 import { TrendingUp, Calendar as CalendarIcon, Flame, Wallet, Plus } from 'lucide-react'
 import useTasksStore from '../../store/tasksStore'

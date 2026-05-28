@@ -1,3 +1,10 @@
+// Página de tarefas. States: showForm, editingTask, undo (toast desfazer conclusão), confirmDelete.
+// handleToggle: marca como concluída, exibe toast "Desfazer" por 5s via setTimeout.
+// handleUndo: reabre a tarefa (toggleComplete novamente).
+// Keyboard shortcuts: 'N' abre formulário, 'Escape' fecha. Ignorado se foco estiver em input/textarea.
+// filteredTasks: memoizado via getFilteredTasks() do store. pendingCount/completedCount no header.
+// undo toast: fixed bottom, fade-in, com botão "Desfazer" que chama handleUndo.
+
 import { useState, useMemo, useCallback, useEffect } from 'react'
 import { Plus, ListChecks } from 'lucide-react'
 import useTasksStore from '../../store/tasksStore'

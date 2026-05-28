@@ -1,5 +1,8 @@
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 
+// Linha do tempo mensal do score geral de hábitos
+// Props: { data: [{ label: string, value: number }] } — ex: [{ label: 'Jan', value: 72 }]
+// Usa Recharts LineChart com gradiente roxo. Vazio → "Sem dados históricos"
 export default function MonthlyTrendChart({ data = [] }) {
   if (data.length === 0) {
     return (

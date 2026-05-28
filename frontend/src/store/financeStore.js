@@ -1,6 +1,8 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
+/* Construtor de transação com valores padrão.
+   Garante que amount seja número e define defaults para campos opcionais. */
 function createTransaction(data) {
   return {
     id: crypto.randomUUID(),
@@ -17,6 +19,7 @@ function createTransaction(data) {
   }
 }
 
+/* Construtor de meta financeira. */
 function createGoal(data) {
   return {
     id: crypto.randomUUID(),
@@ -29,6 +32,7 @@ function createGoal(data) {
   }
 }
 
+/* Listas de categorias e enum para usar em selects. */
 export const transactionCategories = [
   'Alimentação',
   'Transporte',
@@ -71,20 +75,7 @@ function daysAgo(n) {
   return d.toISOString().split('T')[0]
 }
 
-const defaultTransactions = [
-  { id: 't1', description: 'Salário Maio', amount: 8450, type: 'income', category: 'Salário', date: daysAgo(2), paymentMethod: 'debito', essential: true, status: 'pago', createdAt: new Date().toISOString() },
-  { id: 't2', description: 'Aluguel', amount: 1800, type: 'expense', category: 'Moradia', date: daysAgo(1), paymentMethod: 'debito', essential: true, status: 'pago', recurring: 'monthly', createdAt: new Date().toISOString() },
-  { id: 't3', description: 'Supermercado', amount: 520, type: 'expense', category: 'Alimentação', date: daysAgo(3), paymentMethod: 'debito', essential: true, status: 'pago', createdAt: new Date().toISOString() },
-  { id: 't4', description: 'Uber', amount: 34, type: 'expense', category: 'Transporte', date: daysAgo(1), paymentMethod: 'credito', essential: false, status: 'pago', createdAt: new Date().toISOString() },
-  { id: 't5', description: 'Freela Web', amount: 2500, type: 'income', category: 'Freelance', date: daysAgo(4), paymentMethod: 'debito', essential: true, status: 'pago', createdAt: new Date().toISOString() },
-  { id: 't6', description: 'Academia', amount: 99, type: 'expense', category: 'Saúde', date: daysAgo(0), paymentMethod: 'credito', essential: false, status: 'pago', createdAt: new Date().toISOString() },
-  { id: 't7', description: 'Curso React', amount: 450, type: 'expense', category: 'Educação', date: daysAgo(5), paymentMethod: 'credito', essential: false, status: 'pago', createdAt: new Date().toISOString() },
-  { id: 't8', description: 'Cinema', amount: 48, type: 'expense', category: 'Lazer', date: daysAgo(2), paymentMethod: 'dinheiro', essential: false, status: 'pago', createdAt: new Date().toISOString() },
-  { id: 't9', description: 'Dividendos', amount: 320, type: 'income', category: 'Investimentos', date: daysAgo(0), paymentMethod: 'debito', essential: true, status: 'pago', createdAt: new Date().toISOString() },
-  { id: 't10', description: 'Conta Luz', amount: 187, type: 'expense', category: 'Moradia', date: daysAgo(6), paymentMethod: 'debito', essential: true, status: 'pendente', recurring: 'monthly', createdAt: new Date().toISOString() },
-  { id: 't11', description: 'Plano Saúde', amount: 390, type: 'expense', category: 'Saúde', date: daysAgo(0), paymentMethod: 'credito', essential: true, status: 'agendado', recurring: 'monthly', createdAt: new Date().toISOString() },
-  { id: 't12', description: 'Internet', amount: 129, type: 'expense', category: 'Moradia', date: daysAgo(1), paymentMethod: 'debito', essential: true, status: 'pago', recurring: 'monthly', createdAt: new Date().toISOString() },
-]
+const defaultTransactions = []
 
 const defaultBudgets = [
   { category: 'Alimentação', planned: 1200 },
@@ -102,6 +93,9 @@ const defaultGoals = [
   { id: 'g3', name: 'Carteira de Ações', targetAmount: 50000, currentAmount: 12500, type: 'investimento', deadline: '', createdAt: new Date().toISOString() },
 ]
 
+/* Store de finanças — transações, orçamentos, metas e cálculos agregados.
+   Persistida no localStorage como 'nexus-finance'.
+   Usa get() para queries porque são derivados, não estado bruto. */
 const useFinanceStore = create(
   persist(
     (set, get) => ({
@@ -110,11 +104,13 @@ const useFinanceStore = create(
       goals: defaultGoals,
       filter: { month: new Date().getMonth(), year: new Date().getFullYear(), type: 'all', category: 'all', paymentMethod: 'all', status: 'all', essential: 'all', search: '' },
 
+      /* Adiciona transação com valores normalizados (via createTransaction). */
       addTransaction: (data) =>
         set((state) => ({
           transactions: [...state.transactions, createTransaction(data)],
         })),
 
+      /* Atualiza campos de uma transação pelo id. */
       updateTransaction: (id, data) =>
         set((state) => ({
           transactions: state.transactions.map((t) =>
@@ -127,11 +123,11 @@ const useFinanceStore = create(
           transactions: state.transactions.filter((t) => t.id !== id),
         })),
 
+      /* Merge parcial no filtro — atualiza só os campos informados. */
       setFilter: (partial) =>
         set((state) => ({ filter: { ...state.filter, ...partial } })),
 
-      /* Retorna transações filtradas por mês/ano, tipo, categoria,
-         método de pagamento, status, essencialidade e busca textual. */
+      /* Aplica todos os filtros em cascata: mês/ano → tipo → categoria → pagamento → status → essencial → busca. */
       getFiltered: () => {
         const { transactions, filter } = get()
         return transactions.filter((t) => {
@@ -147,6 +143,7 @@ const useFinanceStore = create(
         })
       },
 
+      /* Filtra transações por mês/ano específico (ignora demais filtros). */
       getFilteredByMonth: (month, year) => {
         return get().transactions.filter((t) => {
           const d = new Date(t.date)
@@ -154,6 +151,8 @@ const useFinanceStore = create(
         })
       },
 
+      /* Retorna total de receitas, despesas e saldo.
+         Aceita lista pré-filtrada opcional para evitar refilter. */
       getSummary: (filtered) => {
         const list = filtered || get().getFiltered()
         const income = list.filter((t) => t.type === 'income').reduce((s, t) => s + t.amount, 0)
@@ -161,6 +160,7 @@ const useFinanceStore = create(
         return { income, expenses, balance: income - expenses }
       },
 
+      /* Agrupa despesas por categoria para gráfico de pizza/barras. */
       getCategoryTotals: (filtered) => {
         const list = filtered || get().getFiltered()
         const expenses = list.filter((t) => t.type === 'expense')
@@ -171,6 +171,7 @@ const useFinanceStore = create(
         return Object.entries(map).map(([name, value]) => ({ name, value }))
       },
 
+      /* Calcula fatura do cartão de crédito: total pendente + total geral. */
       getCreditCardBill: (filtered) => {
         const list = filtered || get().getFiltered()
         const pending = list.filter((t) => t.paymentMethod === 'credito' && t.type === 'expense' && t.status === 'pendente')
@@ -179,6 +180,7 @@ const useFinanceStore = create(
         return { totalPending, totalCredit, pendingCount: pending.length }
       },
 
+      /* Despesas agregadas por método de pagamento. */
       getPaymentMethodSummary: (filtered) => {
         const list = filtered || get().getFiltered()
         const expenses = list.filter((t) => t.type === 'expense')
@@ -189,6 +191,25 @@ const useFinanceStore = create(
         return totals
       },
 
+      /* Overview anual — array de 12 meses com income/expense/balance. */
+      getYearlySummary: (year) => {
+        const { transactions } = get()
+        const months = []
+        for (let m = 0; m < 12; m++) {
+          const list = transactions.filter((t) => {
+            const d = new Date(t.date)
+            return d.getMonth() === m && d.getFullYear() === year
+          })
+          const income = list.filter((t) => t.type === 'income').reduce((s, t) => s + t.amount, 0)
+          const expense = list.filter((t) => t.type === 'expense').reduce((s, t) => s + t.amount, 0)
+          months.push({ income, expense, balance: income - expense })
+        }
+        return months
+      },
+
+      /* Compara mês atual filtrado com o mês anterior (com % de variação).
+         Usa getFilteredByMonth para o mês anterior com os mesmos filtros de tipo/categoria/etc.
+         Proteção contra divisão por zero quando previous = 0. */
       getPreviousMonthComparison: () => {
         const { filter } = get()
         let prevMonth = filter.month - 1
@@ -205,6 +226,7 @@ const useFinanceStore = create(
         }
       },
 
+      /* Compara gastos reais vs orçamento planejado por categoria. */
       getBudgetComparison: (filtered) => {
         const { budgets, filter } = get()
         const list = filtered || get().getFiltered()
@@ -252,6 +274,7 @@ const useFinanceStore = create(
           goals: state.goals.filter((g) => g.id !== id),
         })),
 
+      /* Adiciona valor ao currentAmount da meta (não substitui). */
       contributeToGoal: (id, amount) =>
         set((state) => ({
           goals: state.goals.map((g) =>
@@ -259,8 +282,10 @@ const useFinanceStore = create(
           ),
         })),
 
-      /* Duplica transações recorrentes ao navegar para um novo mês/ano.
-         Evita duplicação checando se já existe transação idêntica no mês destino. */
+      /* Ao navegar para um novo mês, copia transações com recurring != null.
+         Compara descrição + valor + categoria pra evitar duplicar se já foi copiada.
+         Se dia original > 28, usa 28 (seguro pra todos os meses).
+         A cópia perde a flag recurring (vira avulsa) e nasce como 'pendente'. */
       duplicateRecurringTransactions: (month, year) =>
         set((state) => {
           const newTxns = []
@@ -283,6 +308,7 @@ const useFinanceStore = create(
             if (d.getDate() > 28) newDate.setDate(28)
             newTxns.push({
               ...t,
+              recurring: null,
               id: crypto.randomUUID(),
               date: newDate.toISOString().split('T')[0],
               status: 'pendente',

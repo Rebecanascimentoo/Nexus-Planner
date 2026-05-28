@@ -1,5 +1,7 @@
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react'
 
+// Badge de variação percentual. value = número (positivo = verde, negativo = vermelho, 0 = neutro).
+// Renderiza ícone + percentual formatado.
 export default function ChangeBadge({ value }) {
   if (value === 0 || value === undefined) return <Minus size={14} className="text-white/30" />
   const isUp = value > 0

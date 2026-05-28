@@ -1,3 +1,9 @@
+// Página de finanças. States: showForm, editingTxn, confirmDelete, showGoalForm.
+// filtered/summary/categoryData/paymentSummary/creditCardBill/comparison/yearlyData: memoized do financeStore.
+// handleSetFilter: muda mês/ano e dispara duplicateRecurringTransactions para propagar transações recorrentes.
+// exportCSV: gera CSV com BOM UTF-8, headers em português, download via Blob/URL.createObjectURL.
+// savingsRate: calcula % de economia (saldo / receita). Navegação mensal com ChevronLeft/ChevronRight.
+
 import { useState, useMemo, useCallback } from 'react'
 import { Plus, Wallet, CreditCard, Landmark, Banknote, ChevronLeft, ChevronRight, Download } from 'lucide-react'
 import useFinanceStore from '../../store/financeStore'
@@ -9,6 +15,7 @@ import CategoryChart from '../../components/finance/CategoryChart'
 import BudgetCard from '../../components/finance/BudgetCard'
 import GoalCard, { GoalForm } from '../../components/finance/GoalCard'
 import ChangeBadge from '../../components/finance/ChangeBadge'
+import LineReport from '../../components/finance/LineReport'
 import ConfirmDialog from '../../components/ConfirmDialog'
 import Button from '../../components/ui/Button'
 import { formatCurrency } from '../../utils/date'
@@ -25,6 +32,7 @@ export default function FinancePage() {
   const getPaymentMethodSummary = useFinanceStore((s) => s.getPaymentMethodSummary)
   const getCreditCardBill = useFinanceStore((s) => s.getCreditCardBill)
   const getPreviousMonthComparison = useFinanceStore((s) => s.getPreviousMonthComparison)
+  const getYearlySummary = useFinanceStore((s) => s.getYearlySummary)
   const deleteTransaction = useFinanceStore((s) => s.deleteTransaction)
   const duplicateRecurringTransactions = useFinanceStore((s) => s.duplicateRecurringTransactions)
   const notifySuccess = useNotificationStore((s) => s.success)
@@ -40,6 +48,7 @@ export default function FinancePage() {
   const paymentSummary = useMemo(() => getPaymentMethodSummary(filtered), [filtered, getPaymentMethodSummary])
   const creditCardBill = useMemo(() => getCreditCardBill(filtered), [filtered, getCreditCardBill])
   const comparison = useMemo(() => getPreviousMonthComparison(), [transactions, getPreviousMonthComparison])
+  const yearlyData = useMemo(() => getYearlySummary(filter.year), [transactions, filter.year])
 
   const savingsRate = summary.income > 0 ? (summary.balance / summary.income) * 100 : 0
 
@@ -147,7 +156,9 @@ export default function FinancePage() {
         <span className="text-xs text-white/40 font-medium ml-2 min-w-[44px]">{filter.year}</span>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-4">
+      <LineReport data={yearlyData} />
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="glass-card rounded-xl p-4 text-center">
           <p className="text-xs text-white/50 mb-1">Receitas</p>
           <p className="text-lg font-bold text-[#10b981]">{formatCurrency(summary.income)}</p>
@@ -174,6 +185,14 @@ export default function FinancePage() {
             <p className="text-[10px] text-white/40">{creditCardBill.pendingCount} pendente(s)</p>
           )}
         </div>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <span className="text-xs text-white/40 uppercase tracking-wider">Como gastei:</span>
+        <div className="flex-1 h-px bg-white/10" />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="glass-card rounded-xl p-4 text-center">
           <p className="text-xs text-white/50 mb-1 flex items-center justify-center gap-1"><CreditCard size={12} /> Crédito</p>
           <p className="text-lg font-bold text-[#f59e0b]">{formatCurrency(paymentSummary.credito)}</p>

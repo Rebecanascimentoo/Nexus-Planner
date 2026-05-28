@@ -1,3 +1,7 @@
+// Página de cadastro de nova conta. States: name, email, password.
+// handleSubmit: valida campos não vazios, chama login() para registrar e redireciona.
+// Reusa o mesmo fundo decorativo (bglogin, gradientes, motes) das páginas de auth.
+
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import BrandShowcase from '../../components/BrandShowcase'

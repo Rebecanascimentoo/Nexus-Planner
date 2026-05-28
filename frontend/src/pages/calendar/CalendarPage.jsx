@@ -1,3 +1,8 @@
+// Página de calendário mensal. States: year, month, selectedDate, selectedTasks, selectedEvents.
+// eventsWithDate: converte eventos do dashboard (strings "Hoje", "Amanhã", "6 jan") em datas ISO.
+// Painel lateral exibe detalhes do dia selecionado com tarefas e eventos.
+// handlePrev/handleNext: navegação entre meses com ajuste de ano nas bordas.
+
 import { useState, useMemo } from 'react'
 import { Calendar as CalendarIcon } from 'lucide-react'
 import useTasksStore from '../../store/tasksStore'

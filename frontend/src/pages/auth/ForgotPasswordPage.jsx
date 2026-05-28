@@ -1,3 +1,8 @@
+// Página de recuperação de senha. Renderiza formulário de email e estado de confirmação.
+// States: email (input), sent (alterna entre formulário e mensagem de sucesso).
+// handleSubmit: valida email não vazio e troca para estado "sent".
+// motes: partículas decorativas flutuantes no fundo (20 elementos com posição/tamanho/opacidade pseudo-aleatórios).
+
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import BrandShowcase from '../../components/BrandShowcase'

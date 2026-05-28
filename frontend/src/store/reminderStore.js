@@ -1,7 +1,12 @@
 import { create } from 'zustand'
 import { isToday, isOverdue } from '../utils/date'
 
+/* Store de lembretes — estado 100% derivado (só queries, sem estado próprio).
+   Recebe tasks e habits como parâmetro e retorna lembretes ordenados por severidade.
+   Usa get() entre métodos pra manter consistência. */
 const useReminderStore = create((_set, get) => ({
+  /* Gera lembretes de tarefa: atrasada (high) ou vencendo hoje (medium).
+     Ignora tarefas já concluídas. */
   getTaskReminders: (tasks) => {
     const reminders = []
     tasks.forEach((t) => {
@@ -30,6 +35,7 @@ const useReminderStore = create((_set, get) => ({
     return reminders
   },
 
+  /* Gera lembretes de hábito: todo hábito que ainda não foi check-in hoje. */
   getHabitReminders: (habits) => {
     const today = new Date().toISOString().split('T')[0]
     return habits
@@ -44,6 +50,7 @@ const useReminderStore = create((_set, get) => ({
       }))
   },
 
+  /* União de tasks + habits, ordenado por severidade (high → medium → low). */
   getAll: (tasks, habits) => {
     const taskReminders = get().getTaskReminders(tasks)
     const habitReminders = get().getHabitReminders(habits)

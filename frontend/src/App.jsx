@@ -1,3 +1,6 @@
+// Componente raiz da aplicacao. Define as rotas publicas e protegidas,
+// inicializa o tema e renderiza o container de toasts globais.
+
 import { lazy, Suspense, useEffect } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import useThemeStore from './store/themeStore'
@@ -10,6 +13,7 @@ import ForgotPasswordPage from './pages/auth/ForgotPasswordPage'
 import HomePage from './pages/dashboard/HomePage'
 import ToastContainer from './components/Toast'
 
+// Lazy loading — cada pagina so carrega quando a rota e acessada
 const TasksPage = lazy(() => import('./pages/tasks/TasksPage'))
 const HabitsPage = lazy(() => import('./pages/habits/HabitsPage'))
 const CalendarPage = lazy(() => import('./pages/calendar/CalendarPage'))
@@ -17,6 +21,7 @@ const FinancePage = lazy(() => import('./pages/finance/FinancePage'))
 const SettingsPage = lazy(() => import('./pages/settings/SettingsPage'))
 const NotificationsPage = lazy(() => import('./pages/notifications/NotificationsPage'))
 
+// Wrapper que exibe um spinner enquanto a pagina lazy carrega
 function Lazy({ children }) {
   return (
     <Suspense
@@ -32,6 +37,7 @@ function Lazy({ children }) {
 }
 
 export default function App() {
+  // Le o tema salvo (localStorage) e aplica na inicializacao
   useEffect(() => {
     useThemeStore.getState().initTheme()
   }, [])
@@ -40,13 +46,13 @@ export default function App() {
     <>
       <ToastContainer />
       <Routes>
-      {/* Public */}
+      {/* Public — landing, login, cadastro, recuperar senha */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
-      {/* Protected — inside AppLayout (Sidebar + Topbar) */}
+      {/* Protected — Autenticacao obrigatoria. Renderiza Sidebar + Topbar ao redor */}
       <Route
         element={
           <ProtectedRoute>
@@ -63,7 +69,7 @@ export default function App() {
         <Route path="/notifications" element={<Lazy><NotificationsPage /></Lazy>} />
       </Route>
 
-      {/* Catch-all */}
+      {/* Rota curinga — redireciona para a landing */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
     </>

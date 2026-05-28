@@ -1,3 +1,7 @@
+// Landing page pública (não autenticada). Seções: header (logo + nav), hero (logo + CTA), features grid, footer.
+// features: 3 cards com ícone, título e descrição. Links para /login e /register.
+// Sem state ou lógica complexa — página puramente estática de apresentação.
+
 import { Link } from 'react-router-dom'
 import { ArrowRight, Sparkles, Shield, Zap } from 'lucide-react'
 import nexusLogo from '../../assets/nexuslogo.png'
