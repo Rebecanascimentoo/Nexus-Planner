@@ -1,15 +1,12 @@
 import { create } from 'zustand'
 import { DEFAULT_TOAST_DURATION } from '../constants'
+import { uuid } from '../utils/uuid'
 
-/* Store de notificações toast — fila de avisos auto-removíveis.
-   Cada toast ganha um id único e some após duration ms. */
 const useNotificationStore = create((set, get) => ({
   toasts: [],
 
-  /* Adiciona toast na fila e programa remoção automática.
-     O setTimeout é fire-and-forget (não tem cleanup intencional). */
   addToast: (message, type = 'success', duration = DEFAULT_TOAST_DURATION) => {
-    const id = crypto.randomUUID()
+    const id = uuid()
     set((state) => ({ toasts: [...state.toasts, { id, message, type }] }))
     setTimeout(() => {
       set((state) => ({ toasts: state.toasts.filter((t) => t.id !== id) }))

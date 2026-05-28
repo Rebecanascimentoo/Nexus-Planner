@@ -2,12 +2,13 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { isToday, isOverdue } from '../utils/date'
 import { MS_PER_DAY } from '../constants'
+import { uuid } from '../utils/uuid'
 
 /* Construtor de tarefa com valores padrão.
    completedAt começa null — é preenchido por toggleComplete. */
 function createTask(data) {
   return {
-    id: crypto.randomUUID(),
+    id: uuid(),
     title: data.title,
     description: data.description || '',
     completed: false,

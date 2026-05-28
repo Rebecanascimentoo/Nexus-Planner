@@ -1,11 +1,10 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { uuid } from '../utils/uuid'
 
-/* Construtor de transação com valores padrão.
-   Garante que amount seja número e define defaults para campos opcionais. */
 function createTransaction(data) {
   return {
-    id: crypto.randomUUID(),
+    id: uuid(),
     description: data.description,
     amount: parseFloat(data.amount),
     type: data.type || 'expense',
@@ -19,10 +18,9 @@ function createTransaction(data) {
   }
 }
 
-/* Construtor de meta financeira. */
 function createGoal(data) {
   return {
-    id: crypto.randomUUID(),
+    id: uuid(),
     name: data.name,
     targetAmount: parseFloat(data.targetAmount),
     currentAmount: parseFloat(data.currentAmount || 0),
@@ -309,7 +307,7 @@ const useFinanceStore = create(
             newTxns.push({
               ...t,
               recurring: null,
-              id: crypto.randomUUID(),
+              id: uuid(),
               date: newDate.toISOString().split('T')[0],
               status: 'pendente',
               createdAt: new Date().toISOString(),

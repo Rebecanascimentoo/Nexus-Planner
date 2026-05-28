@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { uuid } from '../utils/uuid'
 
 /* Normaliza data pra YYYY-MM-DD (chave usada em logs e notes). */
 function dateKey(date) {
@@ -33,7 +34,7 @@ function defaultMonthlyTarget(frequency, year, month) {
 
 function createHabit(data) {
   return {
-    id: crypto.randomUUID(),
+    id: uuid(),
     name: data.name,
     emoji: data.emoji || '⭐',
     frequency: data.frequency || 'daily',
